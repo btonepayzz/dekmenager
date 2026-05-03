@@ -1,5 +1,14 @@
 """Masaustu: GUI ayarlari + bot. Bulut (Railway): railway_main.py kullan."""
 
+from pathlib import Path
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(Path(__file__).resolve().parent / ".env", override=False)
+except ImportError:
+    pass
+
 from forwarding_gui import run_setup_gui
 from ocr import run
 

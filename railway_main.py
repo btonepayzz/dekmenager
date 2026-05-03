@@ -8,6 +8,14 @@ from __future__ import annotations
 import os
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(Path(__file__).resolve().parent / ".env", override=False)
+except ImportError:
+    pass
 
 from ocr import run as run_bot
 
