@@ -16,3 +16,5 @@ forwarding_config.json
 payzz_session.json
 hesaplar.txt
 hesaplar_formatted.txt
+sessions/
+active_telethon_session.txt

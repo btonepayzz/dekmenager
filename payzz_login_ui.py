@@ -1,3 +1,7 @@
+"""
+Masaustu Selenium ile PayZZ (tarayici). Sunucu / Railway icin Telethon oturumu: panel_app.py + railway_main.py.
+"""
+
 import getpass
 import json
 import os

@@ -2,6 +2,7 @@ import base64
 import io
 import json
 import os
+from pathlib import Path
 import re
 import time
 import unicodedata
@@ -560,6 +561,19 @@ def merge_forwarding_config_from_env(base: dict[str, Any]) -> dict[str, Any]:
     auth_env = os.getenv("AUTHORIZED_CHAT_IDS", "").strip()
     if auth_env:
         cfg["authorized_chat_ids"] = auth_env
+
+    # Web panelden yazilan aktif Telethon session yolu (env ile dosya adi degistirilebilir)
+    active_marker = os.getenv("ACTIVE_TELETHON_SESSION_FILE", "active_telethon_session.txt").strip()
+    if active_marker:
+        try:
+            active_path = Path(active_marker)
+            if active_path.is_file():
+                first_line = active_path.read_text(encoding="utf-8").strip().splitlines()[0].strip()
+                if first_line:
+                    cfg["session_name"] = first_line
+        except Exception:
+            pass
+
     return cfg
 
 
