@@ -13,7 +13,7 @@ import secrets
 from pathlib import Path
 from aiohttp import web
 from aiohttp_session import get_session, setup
-from aiohttp_session.cookie_storage import EncryptedCookieStorage
+from aiohttp_session.cookie_storage import EncryptedCookieStorage, SimpleCookieStorage
 from cryptography.fernet import Fernet
 
 try:
@@ -409,7 +409,18 @@ def _cookie_fernet_key_bytes() -> bytes:
 
 def create_app() -> web.Application:
     app = web.Application()
-    setup(app, EncryptedCookieStorage(_cookie_fernet_key_bytes()))
+    # aiohttp-session >=2.x: bytes verilirse tekrar b64 encode edilir; hazir Fernet anahtarini
+    # Fernet ORNEGI olarak ver (cift encode hatasi olmasin).
+    try:
+        key_bytes = _cookie_fernet_key_bytes()
+        fernet_obj = Fernet(key_bytes)
+        setup(app, EncryptedCookieStorage(fernet_obj))
+    except Exception as exc:
+        print(
+            f"UYARI: EncryptedCookieStorage baslatilamadi ({exc!r}); "
+            "SimpleCookieStorage (sifresiz oturum cookie'si) kullaniliyor."
+        )
+        setup(app, SimpleCookieStorage())
 
     app.router.add_get("/health", handle_health)
     app.router.add_get("/", handle_login_get)
