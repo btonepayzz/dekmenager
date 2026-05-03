@@ -5,6 +5,8 @@ Oturum: EncryptedCookieStorage (PANEL_FERNET_KEY).
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import os
 import re
 import secrets
@@ -359,15 +361,41 @@ async def api_confirm_password(request: web.Request) -> web.Response:
     )
 
 
-def create_app() -> web.Application:
-    fernet_key = os.getenv("PANEL_FERNET_KEY", "").strip()
-    if not fernet_key:
-        raise RuntimeError(
-            "PANEL_FERNET_KEY zorunlu. Uret: python -c \"from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())\""
-        )
+def _cookie_fernet_key_bytes() -> bytes:
+    """
+    Oncelik: PANEL_FERNET_KEY (Fernet.generate_key ciktisi, ascii).
+    Yoksa: TELEGRAM_BOT_TOKEN'dan turetilir (Railway'de tek degiskenle kalkar; stabil).
+    Sonra: SECRET_KEY veya RAILWAY_ENVIRONMENT.
+    Hicbiri yoksa: rastgele (her restartta panel cookie sifirlanir).
+    """
+    explicit = os.getenv("PANEL_FERNET_KEY", "").strip()
+    if explicit:
+        return explicit.encode("ascii")
 
+    token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+    if token:
+        digest = hashlib.sha256((token + "::dekmenager_panel_v1").encode("utf-8")).digest()
+        return base64.urlsafe_b64encode(digest)
+
+    for env_name in ("SECRET_KEY", "RAILWAY_ENVIRONMENT"):
+        seed = os.getenv(env_name, "").strip()
+        if seed:
+            digest = hashlib.sha256((seed + "::panel_cookie").encode("utf-8")).digest()
+            return base64.urlsafe_b64encode(digest)
+
+    from cryptography.fernet import Fernet
+
+    print(
+        "UYARI: PANEL_FERNET_KEY / TELEGRAM_BOT_TOKEN / SECRET_KEY bos; "
+        "rastgele cookie anahtari (her restartta panel oturumu sifirlanir). "
+        "Uretmek icin: python -c \"from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())\""
+    )
+    return Fernet.generate_key()
+
+
+def create_app() -> web.Application:
     app = web.Application()
-    setup(app, EncryptedCookieStorage(fernet_key.encode("ascii")))
+    setup(app, EncryptedCookieStorage(_cookie_fernet_key_bytes()))
 
     app.router.add_get("/health", handle_health)
     app.router.add_get("/", handle_login_get)
