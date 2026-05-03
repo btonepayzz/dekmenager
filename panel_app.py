@@ -14,6 +14,7 @@ from pathlib import Path
 from aiohttp import web
 from aiohttp_session import get_session, setup
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
+from cryptography.fernet import Fernet
 
 try:
     from telethon import TelegramClient
@@ -361,29 +362,42 @@ async def api_confirm_password(request: web.Request) -> web.Response:
     )
 
 
+def _fernet_key_from_seed(seed: str) -> bytes:
+    """Herhangi bir metinden Fernet uyumlu 32 bayt anahtar (urlsafe b64)."""
+    digest = hashlib.sha256(seed.encode("utf-8")).digest()
+    key = base64.urlsafe_b64encode(digest)
+    Fernet(key)
+    return key
+
+
 def _cookie_fernet_key_bytes() -> bytes:
     """
-    Oncelik: PANEL_FERNET_KEY (Fernet.generate_key ciktisi, ascii).
-    Yoksa: TELEGRAM_BOT_TOKEN'dan turetilir (Railway'de tek degiskenle kalkar; stabil).
-    Sonra: SECRET_KEY veya RAILWAY_ENVIRONMENT.
-    Hicbiri yoksa: rastgele (her restartta panel cookie sifirlanir).
+    Oncelik: PANEL_FERNET_KEY (Fernet.generate_key ciktisi, urlsafe b64, 44 karakter civari).
+    Gecersizse: bu metinden turetilir (cokmez).
+    Yoksa: TELEGRAM_BOT_TOKEN / SECRET_KEY / RAILWAY_ENVIRONMENT seed.
+    Hicbiri yoksa: rastgele.
     """
     explicit = os.getenv("PANEL_FERNET_KEY", "").strip()
     if explicit:
-        return explicit.encode("ascii")
+        try:
+            key_bytes = explicit.encode("ascii")
+            Fernet(key_bytes)
+            return key_bytes
+        except (ValueError, UnicodeEncodeError):
+            print(
+                "UYARI: PANEL_FERNET_KEY Fernet icin gecersiz (32 bayt urlsafe b64 degil); "
+                "degerden turetilen anahtar kullaniliyor."
+            )
+            return _fernet_key_from_seed("panel_fernet_explicit::" + explicit)
 
     token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
     if token:
-        digest = hashlib.sha256((token + "::dekmenager_panel_v1").encode("utf-8")).digest()
-        return base64.urlsafe_b64encode(digest)
+        return _fernet_key_from_seed(token + "::dekmenager_panel_v1")
 
     for env_name in ("SECRET_KEY", "RAILWAY_ENVIRONMENT"):
         seed = os.getenv(env_name, "").strip()
         if seed:
-            digest = hashlib.sha256((seed + "::panel_cookie").encode("utf-8")).digest()
-            return base64.urlsafe_b64encode(digest)
-
-    from cryptography.fernet import Fernet
+            return _fernet_key_from_seed(seed + "::panel_cookie")
 
     print(
         "UYARI: PANEL_FERNET_KEY / TELEGRAM_BOT_TOKEN / SECRET_KEY bos; "
