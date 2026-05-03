@@ -1,0 +1,5 @@
+# Ornek blok (hesaplar.txt olarak kopyalayip doldur):
+# Departman
+# Ad Soyad
+# Banka
+# TR00...

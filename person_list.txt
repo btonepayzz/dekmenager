@@ -1,0 +1,299 @@
+EMRE TAŞTAN
+606-EMRE--TATAN
+Jakarta	5	0	₺0	Aktif
+
+MÜSLÜM AK
+615-MSLM-AK
+Çelik	2	0	₺0	Aktif
+
+Özgür Keskin
+605-ZGR-KESKIN
+SAMSUN	6	0	₺0	Aktif
+
+burhan ileri
+544-BURHAN--ILERI
+Tahran	1	0	₺0	Aktif
+
+Ülkü Mutlu
+537-LK--MUTLU
+Truva	2	0	₺0	Aktif
+
+Arzu yıldız Okur
+537-ARZU-YILDIZ-OKUR
+Truva	1	0	₺0	Aktif
+
+MEHMET EREN
+546-MEHMET--EREN-1
+Paris	1	0	₺0	Aktif
+
+MEHMET EMİN ERSÜRER
+546-MEHMET-EMN--ERSRER
+Paris	1	0	₺0	Aktif
+
+BARIŞ CAN ŞAHİN
+615-BARI-CAN-AHN
+Çelik	5	0	₺0	Aktif
+
+MEHMET İNCE
+615-MEHMET-NCE
+Çelik	1	0	₺0	Aktif
+
+esma gülistan canipek
+616-ESMA-GLISTAN--CANIPEK
+Barcelona	2	0	₺0	Aktif
+
+MEREN YAPI İNŞAAT TURİZM SANAYİ VE TİCARET LİMİTED
+546-MEREN-YAPI-NAAT-TURZM-SANAY-VE-TCARET-LMTED
+Paris	1	0	₺0	Aktif
+
+MERYEM TEL
+618-MERYEM-TEL
+ROYS	1	0	₺0	Aktif
+
+rıdvan deste
+618-RIDVAN--DESTE
+ROYS	1	0	₺0	Aktif
+
+MURAT ALİCAN
+594-MURAT-ALCAN
+GADDAR 2	1	0	₺0	Aktif
+
+berat kalçık
+544-BERAT-KALIK
+Tahran	3	0	₺0	Aktif
+
+aysel demir
+615-AYSEL--DEMIR
+Çelik	1	0	₺0	Aktif
+
+bedri meltem
+544-BEDRI--MELTEM
+Tahran	3	0	₺0	Aktif
+
+GÜÇLÜLER TARIM HAYVANCILIK GIDA İNŞAAT ELEKTRİK ELEKTRONİK M
+456-GLLER-TARIM-HAYVANCILIK--GIDA-NAAT-ELEKTRK-ELEKTRONK-M
+ANKARA	2	0	₺0	Aktif
+
+talat yıldırım
+572-TALAT--YILDIRIM-
+Kayseri	6	0	₺0	Aktif
+
+hakan kaptan
+611-HAKAN-KAPTAN
+Teddy	3	0	₺0	Aktif
+
+ÖMER HATTAP ŞAMAROĞLU
+546-MER-HATTAP--AMAROLU
+Paris	1	0	₺0	Aktif
+
+FERHAT ÖZER
+594-FERHAT-ZER
+GADDAR 2	3	0	₺0	Aktif
+
+seda tuna
+616-SEDA-TUNA
+Barcelona	3	0	₺0	Aktif
+
+berşah şenay
+611-BERAH-ENAY
+Teddy	1	0	₺0	Aktif
+
+MEHMET CAN TOKGÖZ
+540-MEHMET-CAN-TOKGZ
+Tokyo	2	0	₺0	Aktif
+
+TOLGA YILDIRIM
+540-TOLGA--YILDIRIM
+Tokyo	2	0	₺0	Aktif
+
+AHMET AKALIN
+540-AHMET-AKALIN
+Tokyo	1	0	₺0	Aktif
+
+RAHİME ALCIN
+540-RAHME-ALCIN
+Tokyo	3	0	₺0	Aktif
+
+bulut ülkeroğlu
+611-BULUT-LKEROLU-1
+Teddy	1	0	₺0	Aktif
+
+MUSTAFA DEMİR
+615-MUSTAFA-DEMR-2
+Çelik	3	0	₺0	Aktif
+
+MUSTAFA DEMİR
+615-MUSTAFA-DEMR
+Çelik	2	0	₺0	Aktif
+
+mahmut gün
+572-MAHMUT-GN
+Kayseri	1	0	₺0	Aktif
+
+bulut ülkeroğlu bulut ülkeroğlu
+611-BULUT-LKEROLU-BULUT-LKEROLU
+Teddy	1	0	₺0	Aktif
+
+merve özdemir
+BRZL-MERVE-ZDEMIR
+BREZİLYA	1	0	₺0	Aktif
+
+ARDA EFECAN IRIZ
+606-ARDA-EFECAN-IRIZ-
+Jakarta	2	0	₺0	Aktif
+
+mustafa samet dönder
+572-MUSTAFA-SAMET--DNDER
+Kayseri	3	0	₺0	Aktif
+
+Muhammed Şeyhmuhammed
+ALS1-MUHAMMED--EYHMUHAMMED
+ALASKA	1	0	₺0	Aktif
+
+BERAT KALCIK
+544-BERAT--KALCIK-1
+Tahran	1	0	₺0	Aktif
+
+BERAT KALCIK
+544-BERAT--KALCIK
+Tahran	1	0	₺0	Aktif
+
+rahime alçın
+617-RAHIME--ALIN
+Romanya	0	0	₺0	Aktif
+
+MEHMET CAN TOKGÖZ
+617-MEHMET-CAN-TOKGZ-1
+Romanya	0	0	₺0	Aktif
+
+MEHMET CAN TOKGÖZ
+617-MEHMET-CAN-TOKGZ
+Romanya	0	0	₺0	Aktif
+
+TOLGA YILDIRIM
+617-TOLGA--YILDIRIM
+Romanya	0	0	₺0	Aktif
+
+VEYSEL TAYŞAN
+598-VEYSEL-TAYAN
+AKİF DP	3	0	₺0	Aktif
+
+VEYSEL TAYŞAN
+594-VEYSEL-TAYAN
+GADDAR 2	6	0	₺0	Aktif
+
+MUSTAFA DURMUŞ
+604-MUSTAFA--DURMU
+Rony	1	0	₺0	Aktif
+
+FATMA AYLA
+617-FATMA--AYLA
+Romanya	0	0	₺0	Aktif
+
+YAŞAR YÜCEGÖNÜL
+552-YAAR-YCEGNL-1
+Roma	2	0	₺0	Aktif
+
+HAVA DOĞRUER
+617-HAVA--DORUER
+Romanya	0	0	₺0	Aktif
+
+gülten kurç
+544-GLTEN-KUR
+Tahran	3	0	₺0	Aktif
+
+arafat çivi
+611-ARAFAT-IVI
+Teddy	2	0	₺0	Aktif
+
+ÖMER SANLI
+546-MER--SANLI
+Paris	2	0	₺0	Aktif
+
+Muhammet ali Şahin
+616-MUHAMMET-ALI-AHIN-
+Barcelona	5	0	₺0	Aktif
+
+Deniz Çiçek
+616-DENIZ-IEK
+Barcelona	3	0	₺0	Aktif
+
+MEHMET EREN
+546-MEHMET--EREN
+Paris	1	0	₺0	Aktif
+
+umut ülkeroğlu
+611-UMUT-LKEROLU
+Teddy	7	0	₺0	Aktif
+
+bulut ülkeroğlu
+611-BULUT-LKEROLU
+Teddy	1	0	₺0	Aktif
+
+BÜNYAMİN EREN
+546-BNYAMN--EREN
+Paris	3	0	₺0	Aktif
+
+İSMAİL YILDIRIM
+546-SMAL--YILDIRIM
+Paris	1	0	₺0	Aktif
+
+RAMAZAN AYTÜRK
+604-RAMAZAN--AYTRK
+Rony	6	0	₺0	Aktif
+
+HAMZA TAVAN
+573-HAMZA-TAVAN-
+Moldova	3	0	₺0	Aktif
+
+ABDULAZİZ YELSALİ
+573-ABDULAZZ-YELSAL-
+Moldova	3	0	₺0	Aktif
+
+MUSTAFA EREN
+546-MUSTAFA--EREN
+Paris	2	0	₺0	Aktif
+
+Naciye Hazır
+607-NACIYE-HAZIR
+Madrid	0	0	₺0	Aktif
+
+Kadir Keleş
+531-KADIR-KELE
+KuzeyKore	3	0	₺0	Aktif
+
+ŞİYAR ÇELİK
+606-YAR--ELK-
+Jakarta	1	0	₺0	Aktif
+
+ONUR GÜLEŞ
+606-ONUR--GLE
+Jakarta	1	0	₺0	Aktif
+
+AYŞEGÜL YAŞAR
+552-AYEGL-YAAR
+Roma	2	0	₺0	Aktif
+
+fuat yilmaz
+524-FUAT-YILMAZ
+Doğu	6	0	₺0	Aktif
+
+BÜŞRA BULUT
+582-BRA-BULUT
+KASSAM	2	0	₺0	Aktif
+
+zeynep kılçık
+BRZL-ZEYNEP-KILIK
+BREZİLYA	1	0	₺0	Aktif
+
+Hüseyin Elmas
+603-HSEYIN-ELMAS
+HİKMETDP	11	0	₺0	Aktif
+
+ZEYNEL KELEŞ
+531-ZEYNEL-KELE
+KuzeyKore	1	0	₺0	Aktif
+
+Yıldızcar Grup Otomotiv Dış Ticaret Limited Şirketi
+537-YILDIZCAR-GRUP-OTOMOTIV-DI-TICARET-LIMITED-IRKETI
+Truva	2	0	₺0	Aktif
