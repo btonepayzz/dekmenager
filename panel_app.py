@@ -12,8 +12,8 @@ import re
 import secrets
 from pathlib import Path
 from aiohttp import web
-from aiohttp_session import get_session, setup
-from aiohttp_session.cookie_storage import EncryptedCookieStorage, SimpleCookieStorage
+from aiohttp_session import get_session, setup, SimpleCookieStorage
+from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from cryptography.fernet import Fernet
 
 try:
