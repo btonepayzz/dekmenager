@@ -23,10 +23,10 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 
 VISION_API_KEY = os.getenv("VISION_API_KEY", "").strip()
 
-# Opsiyonel: OCR sonucunu ek olarak bu chat'e de yönlendir.
-# Boş bırakılırsa sadece fotoğrafı atan kişiye cevap gider.
-FORWARD_CHAT_ID = os.getenv("FORWARD_CHAT_ID", "").strip()
-FORWARD_ONLY_SOURCE_CHAT_ID = os.getenv("FORWARD_ONLY_SOURCE_CHAT_ID", "").strip()
+# Opsiyonel: OCR sonucunu ek olarak bu chat'e de yönlendir (configure_runtime_settings gunceller).
+FORWARD_CHAT_ID = ""
+# Bos degilse sadece bu kaynak chat'ten gelen mesajlarda Telethon oto yonlendirme calisir.
+FORWARD_ONLY_SOURCE_CHAT_ID = ""
 
 BOT_API_BASE = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}"
 FILE_API_BASE = f"https://api.telegram.org/file/bot{TELEGRAM_BOT_TOKEN}"
@@ -588,6 +588,7 @@ def parse_chat_id_list(raw_value: str) -> set[str]:
 
 def configure_runtime_settings() -> None:
     global TELEGRAM_BOT_TOKEN, BOT_API_BASE, FILE_API_BASE, AUTHORIZED_CHAT_IDS, VISION_API_KEY, VISION_URL
+    global FORWARD_CHAT_ID, FORWARD_ONLY_SOURCE_CHAT_ID
 
     config = get_effective_forwarding_config()
 
@@ -604,6 +605,11 @@ def configure_runtime_settings() -> None:
     env_ids = parse_chat_id_list(os.getenv("AUTHORIZED_CHAT_IDS", ""))
     file_ids = parse_chat_id_list(str(config.get("authorized_chat_ids", "")))
     AUTHORIZED_CHAT_IDS = env_ids or file_ids
+
+    fc_env = os.getenv("FORWARD_CHAT_ID", "").strip()
+    fo_env = os.getenv("FORWARD_ONLY_SOURCE_CHAT_ID", "").strip()
+    FORWARD_CHAT_ID = fc_env or str(config.get("forward_chat_id", "")).strip()
+    FORWARD_ONLY_SOURCE_CHAT_ID = fo_env or str(config.get("forward_only_source_chat_id", "")).strip()
 
     env_vision = os.getenv("VISION_API_KEY", "").strip()
     if env_vision:
@@ -808,6 +814,7 @@ def extract_text_with_vision(image_bytes: bytes) -> str:
 
 
 def handle_update(update: dict[str, Any]) -> None:
+    configure_runtime_settings()
     message = update.get("message") or update.get("edited_message")
     if not message:
         return

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import json
 import os
 import re
 import secrets
@@ -71,14 +72,21 @@ def _telethon_api() -> tuple[int, str]:
     return int(api_id_raw), api_hash
 
 
+def _forwarding_config_path() -> Path:
+    return Path(os.getenv("FORWARDING_CONFIG_FILE", "forwarding_config.json")).resolve()
+
+
 def _html_page(title: str, body: str) -> str:
     return f"""<!DOCTYPE html>
 <html lang="tr"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>{title}</title>
 <style>
 body{{font-family:system-ui,sans-serif;max-width:42rem;margin:2rem auto;padding:0 1rem;background:#0f172a;color:#e2e8f0;}}
-a{{color:#38bdf8;}} input,button{{font-size:1rem;padding:.5rem .75rem;border-radius:.375rem;border:1px solid #334155;background:#1e293b;color:#e2e8f0;}}
+a{{color:#38bdf8;}} input,button,textarea{{font-size:1rem;padding:.5rem .75rem;border-radius:.375rem;border:1px solid #334155;background:#1e293b;color:#e2e8f0;}}
+textarea{{width:100%;box-sizing:border-box;min-height:5rem;font-family:inherit;}}
 button{{cursor:pointer;background:#2563eb;border-color:#1d4ed8;}} .card{{background:#1e293b;border:1px solid #334155;border-radius:.5rem;padding:1.25rem;margin:1rem 0;}}
+.hint{{font-size:.875rem;color:#94a3b8;margin:.25rem 0 0;}}
+.warn{{color:#fbbf24;}}
 .msg{{white-space:pre-wrap;background:#0c1222;padding:.75rem;border-radius:.375rem;border:1px solid #334155;}}
 label{{display:block;margin:.5rem 0 .25rem;color:#94a3b8;font-size:.875rem;}}
 </style></head><body>
@@ -186,8 +194,24 @@ async def handle_panel(request: web.Request) -> web.Response:
     sessions_dir = _sessions_dir()
     session_path = sessions_dir / f"{slug}.session"
     has_session = session_path.is_file()
+    cfg_path = _forwarding_config_path()
     body = f"""
 <p>Giris: <strong>{user}</strong> (session dosyasi: <code>sessions/{slug}.session</code>)</p>
+<div class="card">
+<h2>Bot chat ID ayarlari</h2>
+<p>OCR/mesajlar icin yetkili chat ID listesi ve opsiyonel yonlendirme hedefleri. Kayit <code>{cfg_path.name}</code> dosyasina yazilir.</p>
+<p class="hint warn" id="botEnvLock"></p>
+<label>Yetkili chat ID'ler (bos = herkes)</label>
+<p class="hint">Virgul veya bosluk ile ayirin. Gruba botu ekleyip bir mesajda chat id ogrenin.</p>
+<textarea id="authChats" placeholder="-1001234567890, -491234567"></textarea>
+<label>OCR kopyasi hedef chat ID (bos = kapali)</label>
+<p class="hint">Bot, OCR metnini bu chat'e de gonderir (<code>FORWARD_CHAT_ID</code> ile ayni).</p>
+<input id="forwardChat" type="text" placeholder="-1001234567890"/>
+<label>Sadece bu kaynak chat ID'de oto yonlendirme (bos = tum yetkili chatler)</label>
+<input id="forwardOnly" type="text" placeholder="-491234567"/>
+<button type="button" id="btnSaveBot">Chat ayarlarini kaydet</button>
+<p class="hint" id="botSaveOut"></p>
+</div>
 <div class="card">
 <h2>Telethon baglanti</h2>
 <p>API bilgisi env: <code>TELETHON_API_ID</code>, <code>TELETHON_API_HASH</code></p>
@@ -234,6 +258,42 @@ document.getElementById('btn2fa').onclick = async () => {{
     show(JSON.stringify(j, null, 2));
   }} catch(e) {{ show('Hata: ' + e.message); }}
 }};
+const botOut = document.getElementById('botSaveOut');
+const botEnvEl = document.getElementById('botEnvLock');
+async function loadBotSettings() {{
+  try {{
+    const r = await fetch('/api/bot-settings');
+    const j = await r.json().catch(() => ({{}}));
+    if (!r.ok) throw new Error(j.error || r.statusText);
+    document.getElementById('authChats').value = j.authorized_chat_ids || '';
+    document.getElementById('forwardChat').value = j.forward_chat_id || '';
+    document.getElementById('forwardOnly').value = j.forward_only_source_chat_id || '';
+    const L = j.env_lock || {{}};
+    const bits = [];
+    if (L.authorized_chat_ids) bits.push('AUTHORIZED_CHAT_IDS');
+    if (L.forward_chat_id) bits.push('FORWARD_CHAT_ID');
+    if (L.forward_only_source_chat_id) bits.push('FORWARD_ONLY_SOURCE_CHAT_ID');
+    botEnvEl.textContent = bits.length
+      ? 'Railway/env bu alanlari eziyor: ' + bits.join(', ') + ' — panelden kayitsa dosyaya yazilir ama bot env degerini kullanir.'
+      : '';
+  }} catch (e) {{ botEnvEl.textContent = 'Ayarlar yuklenemedi: ' + e.message; }}
+}}
+document.getElementById('btnSaveBot').onclick = async () => {{
+  try {{
+    botOut.textContent = 'Kaydediliyor...';
+    const body = {{
+      authorized_chat_ids: document.getElementById('authChats').value.trim(),
+      forward_chat_id: document.getElementById('forwardChat').value.trim(),
+      forward_only_source_chat_id: document.getElementById('forwardOnly').value.trim(),
+    }};
+    const r = await fetch('/api/bot-settings', {{ method: 'POST', headers: {{'Content-Type':'application/json'}}, body: JSON.stringify(body) }});
+    const j = await r.json().catch(() => ({{}}));
+    if (!r.ok) throw new Error(j.error || r.statusText);
+    botOut.textContent = 'Kaydedildi: ' + (j.path || '');
+    loadBotSettings();
+  }} catch (e) {{ botOut.textContent = 'Hata: ' + e.message; }}
+}};
+loadBotSettings();
 </script>
 """
     return web.Response(text=_html_page("Telethon panel", body), content_type="text/html", charset="utf-8")
@@ -362,6 +422,73 @@ async def api_confirm_password(request: web.Request) -> web.Response:
     )
 
 
+async def api_bot_settings_get(request: web.Request) -> web.Response:
+    await _require_panel_user(request)
+    path = _forwarding_config_path()
+    data: dict = {}
+    if path.is_file():
+        try:
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                data = loaded
+        except Exception:
+            pass
+
+    def _s(key: str) -> str:
+        v = data.get(key, "")
+        return str(v).strip() if v is not None else ""
+
+    return web.json_response(
+        {
+            "authorized_chat_ids": _s("authorized_chat_ids"),
+            "forward_chat_id": _s("forward_chat_id"),
+            "forward_only_source_chat_id": _s("forward_only_source_chat_id"),
+            "file_path": str(path),
+            "env_lock": {
+                "authorized_chat_ids": bool(os.getenv("AUTHORIZED_CHAT_IDS", "").strip()),
+                "forward_chat_id": bool(os.getenv("FORWARD_CHAT_ID", "").strip()),
+                "forward_only_source_chat_id": bool(os.getenv("FORWARD_ONLY_SOURCE_CHAT_ID", "").strip()),
+            },
+        }
+    )
+
+
+async def api_bot_settings_post(request: web.Request) -> web.Response:
+    await _require_panel_user(request)
+    try:
+        payload = await request.json()
+        if not isinstance(payload, dict):
+            return web.json_response({"error": "json nesnesi gerekli"}, status=400)
+    except Exception:
+        return web.json_response({"error": "json body gerekli"}, status=400)
+
+    path = _forwarding_config_path()
+    existing: dict = {}
+    if path.is_file():
+        try:
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                existing = loaded
+        except Exception:
+            existing = {}
+
+    for key in ("authorized_chat_ids", "forward_chat_id", "forward_only_source_chat_id"):
+        if key in payload:
+            existing[key] = str(payload.get(key, "") or "").strip()
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(existing, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    try:
+        from ocr import configure_runtime_settings
+
+        configure_runtime_settings()
+    except Exception as exc:
+        return web.json_response({"ok": True, "path": str(path), "reload_warning": str(exc)})
+
+    return web.json_response({"ok": True, "path": str(path)})
+
+
 def _fernet_key_from_seed(seed: str) -> bytes:
     """Herhangi bir metinden Fernet uyumlu 32 bayt anahtar (urlsafe b64)."""
     digest = hashlib.sha256(seed.encode("utf-8")).digest()
@@ -431,6 +558,8 @@ def create_app() -> web.Application:
     app.router.add_post("/api/telethon/send_code", api_send_code)
     app.router.add_post("/api/telethon/confirm_code", api_confirm_code)
     app.router.add_post("/api/telethon/confirm_password", api_confirm_password)
+    app.router.add_get("/api/bot-settings", api_bot_settings_get)
+    app.router.add_post("/api/bot-settings", api_bot_settings_post)
 
     app["telethon_pending"] = {}
     return app
