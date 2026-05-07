@@ -980,8 +980,30 @@ def handle_update(update: dict[str, Any]) -> None:
         send_message(chat_id, f"OCR hatasi: {exc}", message_id)
 
 
+def _log_telethon_forwarding_startup() -> None:
+    """Railway logunda neden forward olmayabilecegini hizli goster."""
+    cfg = get_effective_forwarding_config()
+    enabled = bool(cfg.get("enabled", False))
+    api_id = str(cfg.get("api_id", "")).strip()
+    api_hash = str(cfg.get("api_hash", "")).strip()
+    api_ok = bool(api_id and api_hash)
+    sn = str(cfg.get("session_name", "forwarding_user")).strip() or "forwarding_user"
+    session_file = Path(sn + ".session") if not sn.endswith(".session") else Path(sn)
+    session_ok = session_file.is_file()
+    print(
+        f"Telethon oto yonlendirme: FORWARDING_ENABLED etkisi enabled={enabled}, "
+        f"api={'tamam' if api_ok else 'EKSIK'}, session_dosyasi={'var' if session_ok else 'YOK'} ({session_file})"
+    )
+    if enabled and not session_ok:
+        print(
+            "IPUCU: Panelden Telethon ile giris yapin; session kalici disk (volume) yoksa redeploy sonrasi "
+            "dosya silinir. Grup adlari normalize edilmis olarak hem departman hem 'dp' hem 'havale' icermeli."
+        )
+
+
 def run() -> None:
     configure_runtime_settings()
+    _log_telethon_forwarding_startup()
     if not TELEGRAM_BOT_TOKEN:
         raise RuntimeError("Telegram bot token bulunamadi. GUI'den veya TELEGRAM_BOT_TOKEN env ile ayarlayin.")
     if not VISION_API_KEY:
